@@ -379,8 +379,20 @@ p { margin: 0 0 1em; color: var(--texto-suave); text-wrap: pretty; }
   margin: 0; font-family: var(--fonte-marca); font-weight: 600; text-transform: uppercase;
   font-size: clamp(26px, 6.2vw, 104px); line-height: 1.02; letter-spacing: .04em;
 }
-.titulo-ouro span {
-  display: block;
+/* Duas camadas sobrepostas: o volume 3D (sombras pesadas) fica parado numa camada própria,
+   e só a face dourada, leve, recebe o reflexo animado. Assim a rolagem não trava. */
+.titulo-ouro .linha { display: block; position: relative; }
+.titulo-ouro .linha + .linha { font-size: .6em; letter-spacing: .16em; margin-top: .32em; }
+.titulo-ouro .volume {
+  position: absolute; inset: 0; color: #C9A23A; pointer-events: none;
+  /* extrusão 3D + contorno escuro leve + halo dourado, com sombras de texto (leves para o navegador) */
+  text-shadow:
+    0 1px 0 #b8952f, 0 2px 0 #957625, 0 3px 0 #73591b, 0 4px 0 #523f12, 0 5px 0 #33270b,
+    0 0 3px rgb(0 0 0 / .85), 0 0 9px rgb(0 0 0 / .7), 0 0 18px rgb(0 0 0 / .5),
+    0 14px 24px rgb(0 0 0 / .7), 0 0 34px rgb(245 215 122 / .2);
+}
+.titulo-ouro .face {
+  position: relative; display: block;
   /* ouro polido: faixas claras e escuras como metal, mais um reflexo que atravessa */
   background:
     linear-gradient(105deg, transparent 40%, rgb(255 250 230 / .95) 50%, transparent 60%),
@@ -389,15 +401,9 @@ p { margin: 0 0 1em; color: var(--texto-suave); text-wrap: pretty; }
   background-position: 160% 0, 0 0;
   -webkit-background-clip: text; background-clip: text;
   color: transparent; -webkit-text-fill-color: transparent;
-  /* volume 3D (extrusão em camadas), sombra de contato e halo dourado discreto */
-  filter:
-    drop-shadow(0 1px 0 #b8952f) drop-shadow(0 1px 0 #957625) drop-shadow(0 1px 0 #73591b)
-    drop-shadow(0 1px 0 #523f12) drop-shadow(0 1px 0 #33270b)
-    drop-shadow(0 0 2px rgb(0 0 0 / .85)) drop-shadow(0 0 7px rgb(0 0 0 / .75)) drop-shadow(0 0 16px rgb(0 0 0 / .55))
-    drop-shadow(0 14px 22px rgb(0 0 0 / .7)) drop-shadow(0 0 30px rgb(245 215 122 / .2));
   animation: reflexo 7s var(--ease) infinite;
 }
-.titulo-ouro span + span { font-size: .6em; letter-spacing: .16em; margin-top: .32em; animation-delay: .35s; }
+.titulo-ouro .linha + .linha .face { animation-delay: .35s; }
 @keyframes reflexo { 0%, 50% { background-position: 160% 0, 0 0; } 100% { background-position: -70% 0, 0 0; } }
 
 .momento--base {
@@ -429,8 +435,8 @@ p { margin: 0 0 1em; color: var(--texto-suave); text-wrap: pretty; }
 
 @media (max-width: 860px) {
   .momento--titulo { top: 12vh; bottom: auto; left: var(--gutter); right: var(--gutter); }
-  .titulo-ouro span + span { font-size: .84em; letter-spacing: .1em; }
+  .titulo-ouro .linha + .linha { font-size: .84em; letter-spacing: .1em; }
   .momento--base { left: 50%; right: auto; bottom: 9vh; }
   .apoio-base { font-size: 21px; }
 }
-@media (prefers-reduced-motion: reduce) { .titulo-ouro span { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .titulo-ouro .face { animation: none; } }
